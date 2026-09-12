@@ -174,8 +174,13 @@ Historical proof:
   state was contradicted by receipt-block reads; do not infer failure from a
   stale post-purchase read or automatically charge again.
 
-The live proof assertion will eventually fail when the test membership expires;
-investigate expiry instead of assuming the deployment is broken.
+The live check now separates historical purchase proof from current validity.
+Normal expiration reports `expired test membership` rather than deployment
+failure. Changed ownership, expiration or inconsistent state needs inspection;
+archive RPC errors mean the historical proof could not be checked.
+
+For reviewer commands, source/runtime evidence, and presentation notes, see the
+[judge verification guide](JUDGES_HSK_VERIFICATION.md).
 
 Generated `dist/` and `node_modules/` are ignored. Commit sources, tests,
 documentation, workflow changes and `pnpm-lock.yaml`. Do not store private keys,

@@ -1,5 +1,20 @@
 # DevVault
 
+## Verify the HSK integration
+
+Start with the [five-minute judge guide](docs/JUDGES_HSK_VERIFICATION.md).
+It links to the [Unlock fork](https://github.com/Joaquinmes18/unlock/tree/feat/hashkey-testnet)
+and [contract review/source guide](https://github.com/Joaquinmes18/unlock/blob/feat/hashkey-testnet/docs/HSK_CONTRACT_REVIEW.md).
+
+```sh
+corepack pnpm install --frozen-lockfile
+corepack pnpm test
+corepack pnpm validate:hsk
+```
+
+These checks need no signing key and send no blockchain transaction. The live
+check separates historical purchase proof from current membership expiration.
+
 ## HSKChain + Unlock Protocol
 
 DevVault consumes an Unlock **v14** deployment on **HSKChain Testnet (133)** and
