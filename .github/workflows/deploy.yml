@@ -1,0 +1,56 @@
+name: Deploy Contracts
+
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: "Network to deploy"
+        required: true
+        type: choice
+        options:
+          - hsk-testnet
+          - avalanche-fuji
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.network }}
+    runs-on: ubuntu-latest
+
+    environment: ${{ inputs.network }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Compile contracts
+        run: pnpm hardhat compile
+
+      - name: Deploy
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          HSK_RPC_URL: ${{ secrets.HSK_RPC_URL }}
+          AVALANCHE_RPC_URL: ${{ secrets.AVALANCHE_RPC_URL }}
+        run: |
+          if [ "${{ inputs.network }}" = "hsk-testnet" ]; then
+            pnpm hardhat deploy --network hsk-testnet
+          elif [ "${{ inputs.network }}" = "avalanche-fuji" ]; then
+            pnpm hardhat deploy --network avalanche-fuji
+          fi
