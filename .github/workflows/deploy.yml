@@ -1,4 +1,4 @@
-name: Deploy Unlock Protocol
+name: Validate HSK Deployment (read only)
 
 on:
   workflow_dispatch:
@@ -6,42 +6,17 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: deploy-unlock-hsk
-  cancel-in-progress: false
-
 jobs:
-  deploy:
-    name: Deploy to HSK Testnet
+  validate:
     runs-on: ubuntu-latest
-
-    environment:
-      name: hsk-testnet
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 11.3.0
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Compile contracts
-        run: pnpm hardhat compile
-
-      - name: Deploy Unlock to HSK
-        env:
-          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
-          HSK_RPC_URL: ${{ secrets.HSK_RPC_URL }}
-        run: pnpm hardhat deploy --network hsk-testnet
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate:hsk

@@ -1,0 +1,21 @@
+{
+  "name": "devvault-unlock-hashkey",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.3.0",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint lib test scripts",
+    "test": "tsc && node --test test/*.test.mjs",
+    "validate:hsk": "tsc && node scripts/validate-hsk.mjs"
+  },
+  "dependencies": { "ethers": "6.15.0" },
+  "devDependencies": {
+    "typescript": "5.9.2",
+    "eslint": "9.39.1",
+    "typescript-eslint": "8.46.4"
+  }
+}
