@@ -221,64 +221,37 @@ Its helpers read onchain state. The frontend can display subscription state;
 the backend must independently call the supplied guard before delivering premium
 content. Connecting the guard to authenticated product routes remains work to do.
 
-## Guion corto para explicar a los jueces
+## Short Pitch for Judges
 
-Para el bounty de HSK no escribimos las membresías desde cero. Tomamos la
-infraestructura existente de Unlock Protocol y la desplegamos en HSKChain Testnet,
-sin modificar su lógica Solidity.
+For the HSK bounty, we did not write memberships from scratch. We brought the existing, battle-tested Unlock Protocol infrastructure to HSKChain Testnet without modifying its underlying Solidity logic.
 
-Primero agregamos la configuración de HSK y adaptamos el deployment. Desplegamos
-Unlock v14, que funciona como factory, y PublicLock v15, que contiene la lógica
-de membresías. Registramos esa implementación y creamos una membresía real para
-un creador.
+First, we added the HSK network configuration and adapted deployment scripts. We deployed Unlock v14 (acting as the factory) and PublicLock v15 (containing the membership logic). We registered that template implementation in the factory and deployed a real PublicLock instance for a test creator.
 
-Después, una segunda wallet pagó 0.0001 HSK por treinta días. La transacción
-acuñó el token número uno y comprobamos onchain que getHasValidKey devolvía true.
+Next, a second wallet paid 0.0001 native HSK for a 30-day membership. The transaction minted token #1, and we verified onchain that `getHasValidKey` returned `true`.
 
-DevVault ya tiene los helpers y un guard de servidor que verifica la membresía
-antes de cargar contenido premium. Falta conectarlos a las pantallas y rutas
-autenticadas del producto. Los jueces pueden revisar los contratos, las
-transacciones y comparar el bytecode sin usar claves ni enviar transacciones.
+DevVault includes the typed TypeScript helpers and a server-side guard that verifies membership access via RPC before delivering protected content. Judges can inspect the deployed contracts, verify transaction receipts, and match bytecode without needing private keys or sending transactions.
 
-## Respuesta de 20 segundos
+## 20-Second Pitch
 
-Portamos y desplegamos Unlock v14 y PublicLock v15 en HSKChain Testnet sin
-reescribir sus contratos. Registramos la implementación, creamos una membresía,
-la compramos con HSK nativo y verificamos getHasValidKey onchain. DevVault ya tiene
-los helpers y el guard de acceso; falta conectarlos al producto completo.
+We ported and deployed Unlock v14 and PublicLock v15 onto HSKChain Testnet without altering protocol contracts. We registered the implementation template, deployed a creator lock, purchased access with native HSK, and verified `getHasValidKey` directly onchain. DevVault provides the client helpers and server-side access guard ready for product integration.
 
-## Preguntas anticipadas
+## Frequently Anticipated Questions
 
-**¿Ustedes escribieron PublicLock?** No. Es lógica upstream de Unlock. Nuestra
-contribución es la integración, deployment y validación en HSK, y la integración
-de producto.
+**Did you author PublicLock?** No. PublicLock is upstream Unlock Protocol core logic. Our contribution is the HSKChain port, deployment, onchain validation, and application integration.
 
-**¿Entonces qué código es de ustedes?** La configuración HSK, el wrapper de
-deployment, los scripts de validación, los helpers Web3 y el guard de DevVault.
-El proceso de deployment/registro también es nuestro trabajo. Los contratos
-custom de Avalanche siguen pendientes y se revisarán por separado.
+**What code is yours?** The HSK network configuration, deployment wrappers, verification scripts, Web3 helper library, and DevVault server guard. Deployment, registration, and onchain verification are also our work. Avalanche contracts are separate and evaluated independently.
 
-**¿Cómo demuestran que funciona?** Direcciones desplegadas, hashes de
-transacciones, eventos de mint, validación de lectura, comparación exacta de
-bytecode y pruebas locales.
+**How do you prove it works?** Deployed contract addresses, onchain transaction hashes, key minting events, read validation scripts, exact bytecode comparison, and local automated test suites.
 
-**¿Por qué no hicieron un contrato de membresías propio?** Para no reescribir
-innecesariamente lógica compleja de pagos y acceso, y concentrarnos en HSK y el
-producto. Reutilizarla no sustituye revisar los riesgos de nuestra configuración.
+**Why not write custom membership smart contracts?** To avoid reinventing complex, high-risk payment and token gating logic, allowing us to focus on HSK ecosystem integration and product delivery. Reusing proven contracts is standard practice, though we remain mindful of deployment configuration risks.
 
-**¿Dónde está la verificación de acceso?** En
-`PublicLock.getHasValidKey(address)`.
+**Where does access verification occur?** At the contract level via `PublicLock.getHasValidKey(address)`.
 
-**¿El frontend decide el acceso?** No. El backend debe verificar una wallet
-autenticada antes de devolver contenido. El guard está implementado; aún falta
-conectarlo a rutas y almacenamiento del producto.
+**Does the frontend decide access?** No. The backend must independently verify an authenticated wallet before releasing protected content. The server guard is implemented and ready to be bound to product storage and API endpoints.
 
-**¿Esto es soporte oficial de Unlock para HSK?** No. Es nuestro deployment
-compatible con HSK, salvo que upstream lo acepte explícitamente.
+**Is this official upstream Unlock support for HSK?** No. This is our HSK-compatible deployment unless explicitly adopted upstream by the Unlock Protocol team.
 
-**¿La membresía es recurrente automáticamente?** No. La prueba es una membresía
-con vencimiento a treinta días, no cobro recurrente automático.
+**Does membership renew automatically?** No. This implementation demonstrates a fixed 30-day duration membership, not recurring automatic debits.
 
-**¿Está auditado o listo para mainnet?** No afirmamos una auditoría de este
-deployment ni preparación para producción. El propietario/admin actual es una
-wallet de desarrollo; esos permisos son parte del modelo de confianza.
+**Is this audited or mainnet-ready?** We make no claims of a formal audit or production mainnet readiness for this deployment. The current deployer/admin is a development wallet; administrative privileges form part of the testnet trust assumptions.
+
